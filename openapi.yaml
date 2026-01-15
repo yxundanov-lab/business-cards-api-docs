@@ -6,7 +6,6 @@ info:
 
 servers:
   - url: https://api.example.com
-    description: Production
 
 paths:
   /api/v1/auth/register:
@@ -20,15 +19,11 @@ paths:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
         '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
+          description: Пользователь создан
 
   /api/v1/auth/login:
     post:
-      summary: Авторизация
+      summary: Авторизация пользователя
       requestBody:
         required: true
         content:
@@ -37,200 +32,40 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                  token_type:
-                    type: string
-                  expires_in:
-                    type: integer
+          description: Успешный вход
 
   /api/v1/cards:
     get:
-      summary: Список визиток (фильтрация, пагинация)
-      parameters:
-        - name: card_type
-          in: query
-          schema:
-            type: string
-        - name: tag
-          in: query
-          schema:
-            type: string
-        - name: page
-          in: query
-          schema:
-            type: integer
+      summary: Получить список визиток
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CardListResponse'
     post:
       summary: Создать визитку
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CardCreateRequest'
       responses:
         '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CardResponse'
-
-  /api/v1/cards/{id}:
-    get:
-      summary: Получить визитку
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CardResponse'
-    put:
-      summary: Обновить визитку
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CardUpdateRequest'
-      responses:
-        '200':
-          description: OK
+          description: Создано
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
     RegisterRequest:
       type: object
       required: [first_name, last_name, email, password]
       properties:
-        first_name: { type: string }
-        last_name: { type: string }
-        email: { type: string, format: email }
-        password: { type: string }
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
     LoginRequest:
       type: object
       required: [email, password]
       properties:
-        email: { type: string, format: email }
-        password: { type: string }
-
-    UserResponse:
-      type: object
-      properties:
-        id: { type: integer }
-        first_name: { type: string }
-        last_name: { type: string }
-        email: { type: string }
-
-    CardCreateRequest:
-      type: object
-      required: [card_type]
-      properties:
-        card_type: { type: string, enum: [company, personal] }
-        company_id: { type: integer, nullable: true }
-        person_first_name: { type: string }
-        person_last_name: { type: string }
-        position: { type: string }
-        is_favorite: { type: boolean }
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
-        tags:
-          type: array
-          items: { type: string }
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/ImageRef'
-
-    CardResponse:
-      type: object
-      properties:
-        id: { type: integer }
-        card_type: { type: string }
-        company: 
-          type: object
-          properties:
-            id: { type: integer }
-            name: { type: string }
-        person_first_name: { type: string }
-        person_last_name: { type: string }
-        position: { type: string }
-        is_favorite: { type: boolean }
-        status: { type: string }
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
-        tags:
-          type: array
-          items:
-            type: object
-            properties:
-              id: { type: integer }
-              name: { type: string }
-
-    Channel:
-      type: object
-      properties:
-        channel_type: { type: string }
-        value: { type: string }
-        label: { type: string }
-        is_primary: { type: boolean }
-
-    ImageRef:
-      type: object
-      properties:
-        image_url: { type: string }
-        side: { type: string, enum: [front, back] }
-
-    CardListResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CardResponse'
-        meta:
-          type: object
-          properties:
-            page: { type: integer }
-            per_page: { type: integer }
-            total: { type: integer }
+        email:
+          type: string
+        password:
+          type: string
