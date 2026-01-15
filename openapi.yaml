@@ -564,41 +564,44 @@ components:
               name:
                 type: string
 
-    CardCreate:
-      type: object
-      required:
-        - card_type
-      properties:
-        card_type:
-          type: string
-          enum:
-            - company
-            - personal
-        company_id:
-          type: integer
-          nullable: true
-        person_first_name:
-          type: string
-        person_last_name:
-          type: string
-        person_patronymic:
-          type: string
-        position:
-          type: string
-        is_favorite:
-          type: boolean
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/CardChannelCreate'
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/CardImageCreate'
-        tags:
-          type: array
-          items:
-            type: string
+CardCreate:
+  type: object
+  required:
+    - card_type
+  properties:
+    card_type:
+      type: string
+      enum:
+        - company
+        - personal
+    company_id:
+      type: integer
+      nullable: true
+    person_first_name:
+      type: string
+    person_last_name:
+      type: string
+    person_patronymic:
+      type: string
+      nullable: true
+    position:
+      type: string
+      nullable: true
+    is_favorite:
+      type: boolean
+    channels:
+      type: array
+      items:
+        $ref: '#/components/schemas/CardChannelCreate'
+    images:
+      type: array
+      items:
+        $ref: '#/components/schemas/CardImageCreate'
+    tags:
+      type: array
+      items:
+        type: string
+
 
     CardUpdate:
       type: object
