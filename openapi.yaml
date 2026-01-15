@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: Business Cards API
+  version: "v1"
+  description: |
+    REST API для мобильного приложения хранения визиток.
+    Поддерживает Android и iOS клиенты.
+
+servers:
+  - url: https://api.example.com
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  /api/v1/auth/register:
+    post:
+      summary: Регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Пользователь создан
+
+  /api/v1/auth/login:
+    post:
+      summary: Авторизация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: JWT токен
+
+  /api/v1/users/me:
+    get:
+      summary: Текущий пользователь
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/cards:
+    get:
+      summary: Список визиток
+      responses:
+        "200":
+          description: OK
+
+    post:
+      summary: Создание визитки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CardCreateRequest"
+      responses:
+        "201":
+          description: Создано
+
+  /api/v1/cards/{id}:
+    get:
+      summary: Получить визитку
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+
+    put:
+      summary: Обновить визитку
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Обновлено
+
+    delete:
+      summary: Удалить визитку
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Удалено
+
+  /api/v1/cards/{id}/channels:
+    post:
+      summary: Добавить контакт визитке
+      responses:
+        "201":
+          description: Создано
+
+  /api/v1/cards/{id}/tags:
+    post:
+      summary: Добавить теги визитке
+      responses:
+        "201":
+          description: OK
+
+  /api/v1/cards/{id}/images:
+    post:
+      summary: Добавить изображение визитки
+      responses:
+        "201":
+          description: OK
+
+  /api/v1/companies:
+    get:
+      summary: Список компаний
+      responses:
+        "200":
+          description: OK
+
+    post:
+      summary: Создать компанию
+      responses:
+        "201":
+          description: Создано
+
+  /api/v1/tags:
+    get:
+      summary: Список тегов
+      responses:
+        "200":
+          description: OK
+
+    post:
+      summary: Создать тег
+      responses:
+        "201":
+          description: Создано
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    RegisterRequest:
+      type: object
+      required: [first_name, last_name, email, password]
+      properties:
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string }
+        password: { type: string }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    CardCreateRequest:
+      type: object
+      required: [card_type]
+      properties:
+        card_type:
+          type: string
+          enum: [company, personal]
+        company_id:
+          type: integer
+          nullable: true
+        person_first_name:
+          type: string
+        person_last_name:
+          type: string
+        position:
+          type: string
+        is_favorite:
+          type: boolean
