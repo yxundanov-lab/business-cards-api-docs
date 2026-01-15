@@ -1,17 +1,45 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8"/>
-    <title>Business Cards API Docs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
-      .topbar { background:#0b3d91; color: white; padding: 12px 20px; font-size:18px; }
-    </style>
-  </head>
-  <body>
-    <div class="topbar">Business Cards API — Документация (v1)</div>
-    <redoc spec-url="openapi.yaml"></redoc>
-    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8"/>
+  <title>Business Cards API Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .topbar { background:#0b3d91; color: #fff; padding: 12px 20px; font-size:18px; }
+    .error { padding:20px; color:#b00; background:#fee; }
+    .note { padding:12px; color:#333; background:#f6f8fa; border-top:1px solid #e1e4e8; }
+  </style>
+</head>
+<body>
+  <div class="topbar">Business Cards API — Документация (v1)</div>
+  <div id="content">
+    <div class="note">Загрузка спецификации...</div>
+  </div>
+
+  <script>
+    // Путь к спецификации (relative path — корректен для GitHub Pages)
+    const specUrl = './openapi.yaml';
+
+    // Попытка загрузить spec и показать ReDoc или ошибку
+    fetch(specUrl).then(res => {
+      if (!res.ok) {
+        throw new Error('HTTP ' + res.status + ' при загрузке ' + specUrl);
+      }
+      return res.text();
+    }).then(text => {
+      // вставляем ReDoc и передаём spec-url
+      document.getElementById('content').innerHTML = '<redoc spec-url="' + specUrl + '"></redoc>';
+      const s = document.createElement('script');
+      s.src = 'https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js';
+      document.body.appendChild(s);
+    }).catch(err => {
+      document.getElementById('content').innerHTML =
+        '<div class="error"><b>Ошибка загрузки спецификации:</b><br/>' +
+        err.message +
+        '<br/><br/>Проверьте, что <code>openapi.yaml</code> находится в корне репозитория и Pages настроен на ту же ветку.</div>';
+      console.error('Spec load error:', err);
+    });
+  </script>
+</body>
 </html>
